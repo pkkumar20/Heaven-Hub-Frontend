@@ -4,7 +4,7 @@ import axios from "axios";
 import { useAuth } from "./Auth";
 import Content from "./Content";
 import NotFound from "./NotFound";
-import FilterBar from "./FilterBar.Jsx";
+import FilterBar from "./FilterBar";
 import Loader from "./HomeLoader";
 const MyComponent = () => {
   const {  favoriteHometels, user,  } = useAuth();
