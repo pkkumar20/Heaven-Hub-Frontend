@@ -6,7 +6,7 @@ import Review from "./Review";
 import Rewiew from "./Reviews"
 import "react-loading-skeleton/dist/skeleton.css";
 import { useAuth } from "./Auth";
-import DeleteLoader from "./DeleteLoader.Jsx";
+import DeleteLoader from "./DeleteLoader";
 import Map from "./Map";
 import Host from "./Host"
 import Owner from "./OwnedBy"

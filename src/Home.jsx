@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Content from "./Content";
 import axios from "axios";
 import { useAuth } from "./Auth";
-import FilterBar from "./FilterBar.Jsx";
+import FilterBar from "./FilterBar";
 import NotFound from "./NotFound";
 import Loader from "./HomeLoader";
 import toast from "react-hot-toast";

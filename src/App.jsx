@@ -1,7 +1,7 @@
 import React from "react";
 import {Router, Routes, Route } from "react-router-dom";
 import './App.css'
-import AuthRedirect from './AuthRedirect.Jsx';
+import AuthRedirect from './AuthRedirect';
 import Nav from './Nav'
 import Footer from './Footer'
 import New from './New'
