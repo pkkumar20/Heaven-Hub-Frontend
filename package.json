@@ -26,6 +26,7 @@
     "flowbite-react": "^0.10.2",
     "framer-motion": "^12.5.0",
     "joi": "^17.13.3",
+    "serve": "^14.2.0",
     "lottie-react": "^2.4.1",
     "lottie-web": "^5.12.2",
     "lucide-react": "^0.469.0",
