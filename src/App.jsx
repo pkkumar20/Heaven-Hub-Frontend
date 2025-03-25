@@ -35,7 +35,7 @@ function App() {
       <Nav />
       <div className="div1 ">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route exact path="/"  element={<Home />} />
           <Route path="/find" element={<Find />} />
           <Route path="/view/:id" element={<View />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
