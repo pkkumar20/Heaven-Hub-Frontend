@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: Heaven-Hub-Frontend-1
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm run dev
+    staticPath: dist
