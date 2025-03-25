@@ -8,9 +8,13 @@ export default defineConfig({
     port: process.env.PORT || 3000,
   },
   plugins: [react()],
+  base: "/", // ✅ Ensures correct base URL
+  build: {
+    outDir: "dist", // ✅ Ensures output in `dist/`
+  },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "src"), // Ensure @ refers to src/
+      "@": path.resolve(__dirname, "src"), // ✅ Ensure @ refers to src/
     },
   },
 });
