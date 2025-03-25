@@ -10,7 +10,7 @@ export default defineConfig({
   plugins: [react()],
   base: "/", // ✅ Ensures correct base URL
   build: {
-    outDir: "dist", // ✅ Ensures output in `dist/`
+    outDir: "dist",  // ✅ Output folder for deployment
   },
   resolve: {
     alias: {
