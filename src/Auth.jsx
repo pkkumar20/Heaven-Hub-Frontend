@@ -7,6 +7,7 @@ const AuthContext = createContext();
 const ServerUrl = import.meta.env.VITE_Server_Url;
 
 const socket = io(ServerUrl, { autoConnect: false, withCredentials: true });
+
 const connectSocket = () => {
   if (!socket.connected) {
     socket.connect();
@@ -15,29 +16,28 @@ const connectSocket = () => {
 
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
-  const location = useLocation(); // ✅ Get current route path
+  const location = useLocation();
   const [user, setUser] = useState(null);
   const [favoriteHometels, setFavoriteHometels] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Function to handle logout (including server disconnection)
-  const handleLogout = () => {
+  // ✅ Logout Handler (Clears Session & Disconnects)
+  const handleLogout = async () => {
     setUser(null);
     setFavoriteHometels([]);
     setIsAuthenticated(false);
     sessionStorage.removeItem("user");
     socket.emit("authUpdate");
     socket.disconnect();
-   if (isProtectedRoute(location.pathname)) {
-    navigate("/");
-  }
+    
+    if (isProtectedRoute(location.pathname)) {
+      navigate("/");
+    }
   };
 
-  // ✅ Function to check authentication status
-const checkAuth = async () => {
-  setLoading(true);
-
+  // ✅ Check Authentication
+  const checkAuth = async () => {
   try {
     const res = await axios.get(`${ServerUrl}/user/check`, { withCredentials: true });
 
@@ -47,95 +47,76 @@ const checkAuth = async () => {
       setIsAuthenticated(true);
       connectSocket();
       socket.emit("userLoggedIn", res.data.user._id);
-      sessionStorage.setItem("user", JSON.stringify(res.data.user));
     } else {
-      console.warn("Session expired. Logging out...");
       handleLogout();
-
-      // ✅ Redirect ONLY if user is on a PROTECTED page, not a public route
-      if (isProtectedRoute(location.pathname)) {
-        navigate("/");
-      }
     }
   } catch (err) {
-    console.error("Auth check failed:", err.response?.data?.message || err.message);
+    console.error("Auth check failed:", err.message);
     handleLogout();
-
-    // ✅ Redirect ONLY if user is on a PROTECTED page
-    if (isProtectedRoute(location.pathname)) {
-      navigate("/login");
-    }
   } finally {
     setLoading(false);
   }
 };
 
-// ✅ Helper function to check if the route is PROTECTED
-const isProtectedRoute = (path) => {
-  const protectedRoutes = [
-    "/dashboard",
-    "/dashboard/personal-info",
-    "/dashboard/profile",
-    "/dashboard/Login&security",
-    "/dashboard/User-data",
-    "/dashboard/user-hometel",
-    "/dashboard/user-favriote",
-    "/dashboard/user-reviews",
-    "/dashboard/user-trips",
-    "/new",
-    "/change-password",
-    "/update",
-    "/reserv"
-  ];
-  return protectedRoutes.includes(path);
-};
 
-
-
-  // ✅ Check authentication on mount & reconnect socket
-useEffect(() => {
-  checkAuth();
-
-  socket.on("disconnect", () => {
-    console.warn("Server disconnected. Logging out...");
-    handleLogout();
-  });
-
-  return () => {
-    socket.off("disconnect");
-    socket.disconnect();
+  // ✅ Check if Route is Protected
+  const isProtectedRoute = (path) => {
+    const protectedRoutes = [
+      "/dashboard",
+      "/dashboard/personal-info",
+      "/dashboard/profile",
+      "/dashboard/Login&security",
+      "/dashboard/User-data",
+      "/dashboard/user-hometel",
+      "/dashboard/user-favriote",
+      "/dashboard/user-reviews",
+      "/dashboard/user-trips",
+      "/new",
+      "/change-password",
+      "/update",
+      "/reserv",
+    ];
+    return protectedRoutes.includes(path);
   };
-}, []);
 
-// ✅ Prevent immediate redirection when entering a URL manually
-useEffect(() => {
-  if (!loading && !isAuthenticated && isProtectedRoute(location.pathname)) {
-    navigate("/login");
-  }
-}, [loading, isAuthenticated, location.pathname]);
+  // ✅ Check Authentication on Mount
+  useEffect(() => {
+    checkAuth();
 
+    socket.on("disconnect", () => {
+      console.warn("Server disconnected. Logging out...");
+      handleLogout();
+    });
 
-  // ✅ Sync login/logout across tabs
+    return () => {
+      socket.off("disconnect");
+      socket.disconnect();
+    };
+  }, []);
+
+  // ✅ Redirect Unauthorized Users from Protected Pages
+  useEffect(() => {
+    if (!loading && !isAuthenticated && isProtectedRoute(location.pathname)) {
+      navigate("/login");
+    }
+  }, [loading, isAuthenticated, location.pathname]);
+
+  // ✅ Sync Login/Logout Across Tabs
   useEffect(() => {
     socket.on("authUpdate", checkAuth);
     return () => socket.off("authUpdate");
   }, []);
-  // ✅ Only check auth when visibility changes **if NOT on login/signup**
+
+  // ✅ Re-authenticate on Page Visibility Change
   useEffect(() => {
     const handleVisibilityChange = () => {
-      if (
-        document.visibilityState === "visible" &&
-        location.pathname !== "/login" &&
-        location.pathname !== "/forget-password" &&
-        location.pathname !== "/signup"
-      ) {
+      if (document.visibilityState === "visible" && !["/login", "/signup", "/forget-password"].includes(location.pathname)) {
         checkAuth();
       }
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () =>
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, [location.pathname]);
 
   return (

@@ -35,8 +35,8 @@ export default function View() {
         setCard(response.data);
         setReviewData(response.data.reviews);
       })
-      .catch((err) =>{ navigate(err.response.data.redirectUrl);
-      toast.error(err.response.data.message);}
+      .catch((err) =>{ navigate(err?.response?.data?.redirectUrl||"/");
+      toast.error(err?.response?.data?.message||"Somthing Went wrong");}
       )
   }, [id,user]); // ✅ Runs only when `user` changes
    useEffect(()=>{
