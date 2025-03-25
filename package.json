@@ -1,9 +1,9 @@
 {
-  "name": "lern-ui",
+  "name": "frontend",
+  "homepage": "https://heaven-hub-frontend.onrender.com/",
   "private": false,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://heaven-hub-frontend.onrender.com/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
