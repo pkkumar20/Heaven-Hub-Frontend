@@ -8,7 +8,7 @@ export default defineConfig({
     port: process.env.PORT || 3000,
   },
   plugins: [react()],
-  base: "/", // ✅ Ensures correct base URL
+  base: "/frontend/", // ✅ Ensures correct base URL
   build: {
     outDir: "dist", // ✅ Ensures output in `dist/`
   },
