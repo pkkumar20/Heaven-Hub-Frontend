@@ -6,7 +6,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 const AuthContext = createContext();
 const ServerUrl = import.meta.env.VITE_Server_Url;
 
-const socket = io(ServerUrl, { autoConnect: false, withCredentials: true });
+const socket = io("wss://api.heven-hub.site", {
+  transports: ["websocket"], // Force WebSocket
+});
+
 
 const connectSocket = () => {
   if (!socket.connected) {
