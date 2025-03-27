@@ -2,7 +2,6 @@ import { createContext, useContext, useState, useEffect, useCallback, useRef } f
 import axios from "axios";
 import { io } from "socket.io-client";
 import { useNavigate, useLocation } from "react-router-dom";
-
 const AuthContext = createContext();
 const ServerUrl = import.meta.env.VITE_Server_Url;
 
@@ -43,37 +42,6 @@ export const AuthProvider = ({ children }) => {
       socket.disconnect();
     }
   }, [user?._id]);
-
-  // Check authentication status
-  const checkAuth = useCallback(async () => {
-    if (authCheckRef.current) return;
-    authCheckRef.current = true;
-
-    try {
-      const { data } = await axios.get(`${ServerUrl}/user/check`, {
-        withCredentials: true,
-      });
-
-      if (data.authenticated) {
-        setUser(data.user);
-        setFavoriteHometels(data.user.favoriteHometels || []);
-        setTrips(data.user.reservations || []);
-        setReviews(data.user.reviews || []);
-        setHometels(data.user.hometels || []);
-        setIsAuthenticated(true);
-        connectSocket();
-      } else {
-        handleLogout();
-      }
-    } catch (err) {
-      console.error("Auth check failed:", err);
-      handleLogout();
-    } finally {
-      setLoading(false);
-      authCheckRef.current = false;
-    }
-  }, [connectSocket]);
-
   // Handle logout
   const handleLogout = useCallback(async () => {
     try {
@@ -112,6 +80,43 @@ export const AuthProvider = ({ children }) => {
       }
     }
   }, [disconnectSocket, location.pathname, navigate]);
+  // Check authentication status
+const checkAuth = useCallback(async () => {
+  if (authCheckRef.current) return;
+  authCheckRef.current = true;
+
+  try {
+    const { data } = await axios.get(`${ServerUrl}/user/check`, {
+      withCredentials: true,
+    });
+
+    if (data.authenticated) {
+      setUser(data.user);
+      setFavoriteHometels(data.user.favoriteHometels || []);
+      setTrips(data.user.reservations || []);
+      setReviews(data.user.reviews || []);
+      setHometels(data.user.hometels || []);
+      setIsAuthenticated(true);
+      connectSocket();
+    } else {
+      // Only call logout if we were previously authenticated
+      if (isAuthenticated) {
+        handleLogout();
+      }
+    }
+  } catch (err) {
+    console.error("Auth check failed:", err);
+    // Only call logout for 401 Unauthorized errors
+    if (err.response?.status === 401 && isAuthenticated) {
+      handleLogout();
+    }
+  } finally {
+    setLoading(false);
+    authCheckRef.current = false;
+  }
+}, [connectSocket, isAuthenticated, handleLogout]);
+
+
 
   // Initial auth check
   useEffect(() => {
@@ -142,7 +147,6 @@ export const AuthProvider = ({ children }) => {
         const { data } = await axios.post(`${ServerUrl}/user/login`, credentials, {
           withCredentials: true,
         });
-
         setUser(data.user);
         setFavoriteHometels(data.user.favoriteHometels || []);
         setTrips(data.user.reservations || []);
@@ -153,7 +157,8 @@ export const AuthProvider = ({ children }) => {
         sessionStorage.setItem("user", JSON.stringify(data.user));
         return { success: true, data };
       } catch (err) {
-        return { success: false, error: err.response?.data?.message || "Login failed" };
+        console.log(err);
+        return { success: false,data: err.response };
       }
     },
     signup: async (credentials) => {

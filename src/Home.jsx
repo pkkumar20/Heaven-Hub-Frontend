@@ -10,7 +10,6 @@ function Home() {
 
     const { favoriteHometels, user, isAuthenticated, } = useAuth();
   const ServerUrl = import.meta.env.VITE_Server_Url;
-  console.log(ServerUrl)
       const [loading, setLoading] = useState(false);
   const [datas, setDatas] = useState(null); // State to hold the data
    const [favorite, setFavorite] = useState([]);

@@ -174,84 +174,71 @@ const handleShowDatePicker = (value)=>{
         <p className="mb-3 text-2xl font-semibold text-gray-700 dark:text-gray-400">
           &#8377;{card.price.toLocaleString("en-IN")}/night
         </p>
-        {user !== null && loading === false && (
-          <div className="flex flex-col sm:items-start md:flex-row lg:flex-row md:items-center lg:items-center gap-4 sm:gap-4 md:gap-6 lg:gap-8">
-            {/* Edit & Delete Buttons (Only for Owner) */}
-            {user._id === card.owner._id && (
-              <>
-                {/* Edit Button */}
-                <button
-                  onClick={() => updateListing(card._id)}
-                  className="inline-flex justify-center gap-2 items-center shadow-xl text-lg bg-gray-50 backdrop-blur-md lg:font-semibold isolation-auto border-gray-50 before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-emerald-500 hover:text-gray-50 before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 relative z-10 px-4 py-2 overflow-hidden border-2 rounded-full group"
-                >
-                  Edit
-                  <svg
-                    fill="#50C878"
-                    height="24px"
-                    width="24px"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    stroke="#50C878"
-                    className="w-8 h-8 justify-end group-hover:rotate-50 group-hover:bg-gray-50 text-gray-50 ease-linear duration-300 rounded-full border border-gray-700 group-hover:border-none p-2"
-                  >
-                    <path d="M3 21v-3.75L16.813 3.438a1.5 1.5 0 0 1 2.12 0l1.628 1.628a1.5 1.5 0 0 1 0 2.12L6.75 21H3z"></path>
-                  </svg>
-                </button>
+       {user !== null && !loading && (
+  <div className="flex flex-col sm:flex-row justify-center items-center gap-3 w-full">
+    {/* Edit & Delete Buttons (Only for Owner) */}
+    {user._id === card.owner._id && (
+      <>
+        {/* Edit Button - Fixed Width */}
+        <button
+          onClick={() => updateListing(card._id)}
+          className="flex items-center justify-center gap-2 px-4 py-2 w-40 sm:w-36 text-base font-medium transition-all duration-300 rounded-full shadow-md bg-gray-50 hover:bg-emerald-500 hover:text-white border border-gray-200"
+        >
+          Edit
+          <svg
+            className="w-5 h-5 transition-transform duration-300 group-hover:rotate-12"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path d="M3 21v-3.75L16.813 3.438a1.5 1.5 0 0 1 2.12 0l1.628 1.628a1.5 1.5 0 0 1 0 2.12L6.75 21H3z" />
+          </svg>
+        </button>
 
-                {/* Delete Button */}
-                <button
-                  onClick={() => setShowConfirm(true)}
-                  className="inline-flex justify-center gap-2 items-center shadow-xl text-lg bg-gray-50 backdrop-blur-md lg:font-semibold isolation-auto border-gray-50 before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-red-500 hover:text-gray-50 before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 relative z-10 px-4 py-2 overflow-hidden border-2 rounded-full group"
-                >
-                  Delete
-                  <svg
-                    className="w-8 h-8 justify-end group-hover:rotate-50 group-hover:bg-gray-50 text-gray-50 ease-linear duration-300 rounded-full border border-gray-700 group-hover:border-none p-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <path
-                      d="M10 11V17M14 11V17M4 7H20M6 7V18C6 19.6569 7.34315 21 9 21H15C16.6569 21 18 19.6569 18 18V7H6Z"
-                      stroke="#FF0000"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    ></path>
-                  </svg>
-                </button>
-              </>
-            )}
+        {/* Delete Button - Fixed Width */}
+        <button
+          onClick={() => setShowConfirm(true)}
+          className="flex items-center justify-center gap-2 px-4 py-2 w-40 sm:w-36 text-base font-medium transition-all duration-300 rounded-full shadow-md bg-gray-50 hover:bg-red-500 hover:text-white border border-gray-200"
+        >
+          Delete
+          <svg
+            className="w-5 h-5 transition-transform duration-300 group-hover:rotate-12"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+            />
+          </svg>
+        </button>
+      </>
+    )}
 
-            {/* Reserve Button (For Any Authenticated User) */}
-            <button
-              onClick={() => setShowCalender(true)}
-              className="inline-flex justify-center gap-2  items-center shadow-xl text-lg bg-gray-50 backdrop-blur-md lg:font-semibold isolation-auto border-gray-50 before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-blue-500 hover:text-gray-50 before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 relative z-10 px-4 py-2 overflow-hidden border-2 rounded-full group"
-            >
-              Reserve
-              <svg
-                className="w-8 h-8 justify-end group-hover:rotate-50 group-hover:bg-gray-50 text-gray-50 ease-linear duration-300 rounded-full border border-gray-700 group-hover:border-none p-2"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-              >
-                <path
-                  d="M8 2V5M16 2V5M3 9H21M4 7H20V19C20 20.6569 18.6569 22 17 22H7C5.34315 22 4 20.6569 4 19V7Z"
-                  stroke="#1D4ED8"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                ></path>
-                <path
-                  d="M9 14L11 16L15 12"
-                  stroke="#1D4ED8"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                ></path>
-              </svg>
-            </button>
-          </div>
-        )}
+    {/* Reserve Button - Fixed Width */}
+    <button
+      onClick={() => setShowCalender(true)}
+      className="flex items-center justify-center gap-2 px-4 py-2 w-40 sm:w-36 text-base font-medium transition-all duration-300 rounded-full shadow-md bg-gray-50 hover:bg-blue-500 hover:text-white border border-gray-200"
+    >
+      Reserve
+      <svg
+        className="w-5 h-5 transition-transform duration-300 group-hover:rotate-12"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+        />
+      </svg>
+    </button>
+  </div>
+)}
       </div>
       <hr />
       {card !== null && (

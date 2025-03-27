@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Loader from "./Loader";
+import Loader from "./PrivateRouteLoader";
 import toast from "react-hot-toast";
 import Joi, { object } from "joi";
 import CountrySelect from "./Test3";
@@ -11,7 +10,6 @@ import country from "./country/countriesminified.json";
 import state from "./country/statesminified.json";
 import city from "./country/citiesminified.json";
 export default function FormComponent() {
-    const ServerUrl = import.meta.env.VITE_Server_Url;
   const schema = Joi.object({
     fullname: Joi.string().min(3).required().messages({
       "string.empty": "Full Name is required",
@@ -47,7 +45,7 @@ export default function FormComponent() {
   const [citiesList, setCitiesList] = useState([]);
   // file select
   const navigate = useNavigate();
-  const [loaDing, setLoaDing] = useState(false);
+    const [loaDing, setLoaDing] = useState(false);
   // form
   const [userDetails, setuserDetails] = useState({
     fullname:user.fullname|| "",
@@ -258,7 +256,7 @@ export default function FormComponent() {
     });
 
     if (!isFormValid) return; // Stop submission if validation fails
-
+    setLoaDing(true);
     // Prepare form data
     const newData = {
       id: user._id,
@@ -275,7 +273,6 @@ export default function FormComponent() {
 
     const formData = new FormData();
     formData.append("userDetails", JSON.stringify(newData));
-    const toastId = toast.loading("Updating details...");
       let data = await updateUser({
         id: user._id,
         fullname: userDetails.fullname,
@@ -288,13 +285,13 @@ export default function FormComponent() {
         streetAddress: userDetails.streetAddress,
         password: userDetails.password,
       });
-      if (!data.success) { 
-              toast.error("Failed to update profile. Please try again.", {
-        id: toastId,
-      });
+    if (!data.success) { 
+      setLoaDing(false);
+              toast.error("Failed to update profile. Please try again.");
       } else {
-        navigate(data.data.redirectUrl)
-        toast.success("Details updated successfully! 🎉", { id: toastId });
+      navigate(data.data.redirectUrl)
+      setLoaDing(false);
+        toast.success("Details updated successfully! 🎉");
       }
 
   };
@@ -322,7 +319,10 @@ export default function FormComponent() {
     ) : (
       <FaExclamationCircle className="text-red-500 absolute right-3 top-3" />
     );
-  };
+    };
+     if (loaDing === true) {
+      return <Loader/>
+    }
   return (
     <>
       <div className="lg:py-4 py-2 px-2 mx-auto max-w-2xl">

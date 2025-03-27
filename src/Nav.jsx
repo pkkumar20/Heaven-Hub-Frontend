@@ -2,13 +2,11 @@ import React from "react";
 import { Dropdown, Navbar } from "flowbite-react";
 import { useEffect, useState } from "react";
 import avatar from "animal-avatar-generator";
-import axios from "axios";
+import Loader from "./PrivateRouteLoader";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useAuth } from "./Auth";
-import Loader from "./Loader";
 const NavbarComponent = () => {
-    const ServerUrl = import.meta.env.VITE_Server_Url;
       const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
@@ -42,13 +40,17 @@ const { user, isAuthenticated, logout } = useAuth();
 
   let svg;
   if (user !== null) {
-    svg = avatar(user.fullname, { size: 50, blackout: false });
+    svg = avatar(user.email, { size: 50, blackout: false });
   }
-const handleLogout = async () => {
+  const handleLogout = async () => {
+    setLoading(true);
   try {
     const data = await logout();
+    setLoading(false)
     toast.success("Logged out sucessfully")
   } catch (error) {
+    setLoading(false)
+      toast.error("Somthing went wrong")
     console.error(
       "Logout Failed:",
       error.response?.data?.message || error.message
