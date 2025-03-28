@@ -7,7 +7,7 @@ import { useAuth } from "./Auth";
 import { useNavigate } from "react-router-dom";
 import Loader from "./HometelLoader";
 const Review = ({ hometelId }) => {
-  const { addreview} = useAuth();
+  const { addReview} = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [commentValue, setCommentValue] = useState("");
@@ -95,7 +95,7 @@ const Review = ({ hometelId }) => {
     setMessage(message);
     if (isFormValid === true) {
       setLoading(true);
-        const data = await addreview({
+        const data = await addReview({
           rating: Number(reting),
           comment: commentValue,
           hometelId: hometelId,

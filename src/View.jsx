@@ -68,7 +68,7 @@ export default function View() {
     } else {
        navigate("/");
        setDeleteLoading(false)
-       toast.success(data.data.data.message);
+       toast.success(data.data.message);
     }
   }
   

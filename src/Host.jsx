@@ -2,7 +2,7 @@
 // import { Star } from "lucide-react";
 import avatar from "animal-avatar-generator";
 export default function MeetYourHost({name,email}) {
-  let svg = avatar(name||"", { size: 90, blackout: false });
+  let svg = avatar(email||"", { size: 90, blackout: false });
   return (
     <div className="mt-3 mb-3">
       <h2 className="text-2xl font-semibold mb-4">Meet your host</h2>

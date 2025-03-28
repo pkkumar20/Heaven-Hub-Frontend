@@ -77,7 +77,7 @@ const isLiked = ({ isLiked, id, imagelink }) => {
     );
   } 
  } else {
-const data = await removeFavorite(id);
+          const data = await removeFavorite(id);
 if (!data.success) {
   toast.custom(
     (t) => (

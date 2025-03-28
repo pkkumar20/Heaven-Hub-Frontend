@@ -1,6 +1,6 @@
 import avatar from "animal-avatar-generator";
 export default function MeetYourHost({ name, email }) {
-  let svg = avatar(name||"", { size: 60, blackout: false });
+  let svg = avatar(email||"", { size: 60, blackout: false });
   return (
     <div class="flex flex-row space-x-3 mt-3 mb-3">
       <div

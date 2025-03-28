@@ -11,7 +11,7 @@ const OTPOverlay = ({ email, loadingData ,token,type,sendDetails}) => {
   const [emailLoading, setEmailLoading] = useState(true);
   const [userToken,setUserToken]= useState(token);
   const [resetPass, setResetPass] = useState(false);
-   const { signup, varifyresetPasswordOtp } = useAuth();
+   const { signup, verifyResetPasswordOtp } = useAuth();
   const navigate = useNavigate();
   useEffect(() => {
     setEmailLoading(loadingData);
@@ -78,7 +78,7 @@ const OTPOverlay = ({ email, loadingData ,token,type,sendDetails}) => {
       try {
         if(type==="forget"){
            setEmailLoading(true);
-          const data = await varifyresetPasswordOtp({
+          const data = await verifyResetPasswordOtp({
             Otp: Number(numb),
             email: email,
           });
@@ -154,7 +154,7 @@ return (
               <div class="flex flex-row items-center justify-center text-center text-sm font-medium space-x-1 text-gray-500">
                 <p>Didn't recieve code?</p>{" "}
                 <a
-                  class="flex flex-row items-center text-blue-600"
+                  class="flex flex-row items-center text-blue-600 cursor-pointer"
                   onClick={resendOtp}
                   rel="noopener noreferrer"
                 >

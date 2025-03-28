@@ -4,7 +4,6 @@ import { io } from "socket.io-client";
 import { useNavigate, useLocation } from "react-router-dom";
 const AuthContext = createContext();
 const ServerUrl = import.meta.env.VITE_Server_Url;
-
 // Socket.io connection with proper CORS settings
 const socket = io(ServerUrl, {
   transports: ["websocket", "polling"],
@@ -157,7 +156,6 @@ const checkAuth = useCallback(async () => {
         sessionStorage.setItem("user", JSON.stringify(data.user));
         return { success: true, data };
       } catch (err) {
-        console.log(err);
         return { success: false,data: err.response };
       }
     },
@@ -180,126 +178,122 @@ const checkAuth = useCallback(async () => {
         sessionStorage.setItem("user", JSON.stringify(data.user));
         return { success: true, data };
       } catch (err) {
-        return { success: false, error: err.response?.data?.message || "Signup failed" };
+        return { success: false, data: err.response };
       }
     },
     updateUser: async (credentials) => {
       try {
-        const { data } = await axios.patch(`${ServerUrl}/user/update`, credentials, {
+        const res = await axios.patch(`${ServerUrl}/user/update`, credentials, {
           withCredentials: true,
           headers: { "Content-Type": "multipart/form-data" },
         });
 
-        setUser(data.user);
-        sessionStorage.setItem("user", JSON.stringify(data.user));
+        setUser(res.data.user);
+        sessionStorage.setItem("user", JSON.stringify(res.data.user));
         socket.emit("authUpdate");
-        return { success: true, data };
+        return { success: true, data:res };
       } catch (err) {
-        return { success: false, error: err.response?.data?.message || "Update failed" };
+        return { success: false, data: err.response};
       }
     },
     logout: handleLogout,
     // Favorites
     addFavorite: async (hometelId) => {
       try {
-        const { data } = await axios.post(
+        const res = await axios.post(
           `${ServerUrl}/user/favorite/add`,
-          { hometelId },
+          { hometelId},
           { withCredentials: true }
         );
-
-        setFavoriteHometels(data.favorites);
-        setUser(prev => ({ ...prev, favoriteHometels: data.favorites }));
-        socket.emit("favoritesUpdated", { userId: user._id, favorites: data.favorites });
-        return { success: true, data };
+        setFavoriteHometels(res.data.favorites);
+        setUser(prev => ({ ...prev, favoriteHometels: res.data.favorites }));
+        socket.emit("favoritesUpdated", { userId: user._id, favorites: res.data.favorites });
+        return { success: true, data:res };
       } catch (err) {
-        return { success: false, error: err.response?.data?.message || "Failed to add favorite" };
+        return { success: false, data: err.response };
       }
     },
     removeFavorite: async (hometelId) => {
       try {
-        const { data } = await axios.post(
+        const res = await axios.post(
           `${ServerUrl}/user/favorites/remove`,
           { hometelId },
           { withCredentials: true }
         );
-
-        setFavoriteHometels(data.favorites);
-        setUser(prev => ({ ...prev, favoriteHometels: data.favorites }));
-        socket.emit("favoritesUpdated", { userId: user._id, favorites: data.favorites });
-        return { success: true, data };
+        setFavoriteHometels(res.data.favorites);
+        setUser(prev => ({ ...prev, favoriteHometels: res.data.favorites }));
+        socket.emit("favoritesUpdated", { userId: user._id, favorites: res.data.favorites });
+        return { success: true, data:res };
       } catch (err) {
-        return { success: false, error: err.response?.data?.message || "Failed to remove favorite" };
+        return { success: false, data: err.response };
       }
     },
     // Reviews
     addReview: async (reviewData) => {
       try {
-        const { data } = await axios.post(
+        const res = await axios.post(
           `${ServerUrl}/review/create`,
           reviewData,
           { withCredentials: true }
         );
-
-        setReviews(data.reviews);
-        setUser(prev => ({ ...prev, reviews: data.reviews }));
-        socket.emit("reviewAdded", { userId: user._id, reviews: data.reviews });
-        return { success: true, data };
+        setReviews(res.data.reviews);
+        setUser(prev => ({ ...prev, reviews: res.data.reviews }));
+        socket.emit("reviewAdded", { userId: user._id, reviews: res.data.reviews });
+        return { success: true, data:res };
       } catch (err) {
-        return { success: false, error: err.response?.data?.message || "Failed to add review" };
+        return { success: false, data: err.response };
       }
     },
     removeReview: async (reviewId) => {
       try {
-        const { data } = await axios.delete(
+        const res = await axios.delete(
           `${ServerUrl}/review/${reviewId}`,
           { withCredentials: true }
         );
 
-        setReviews(data.reviews);
-        setUser(prev => ({ ...prev, reviews: data.reviews }));
-        socket.emit("reviewAdded", { userId: user._id, reviews: data.reviews });
-        return { success: true, data };
+        setReviews(res.data.reviews);
+        setUser(prev => ({ ...prev, reviews: res.data.reviews }));
+        socket.emit("reviewAdded", { userId: user._id, reviews: res.data.reviews });
+        return { success: true, data:res };
       } catch (err) {
-        return { success: false, error: err.response?.data?.message || "Failed to remove review" };
+        return { success: false, data: err.response };
       }
     },
     // Trips
     addTrip: async (tripData) => {
       try {
-        const { data } = await axios.post(
+        const res = await axios.post(
           `${ServerUrl}/reserv/${tripData.reservFor}`,
           tripData,
           { withCredentials: true }
         );
 
-        setTrips(data.trips);
-        setUser(prev => ({ ...prev, reservations: data.trips }));
-        socket.emit("tripUpdated", { userId: user._id, reservations: data.trips });
-        return { success: true, data };
+        setTrips(res.data.trips);
+        setUser(prev => ({ ...prev, reservations: res.data.trips }));
+        socket.emit("tripUpdated", { userId: user._id, reservations: res.data.trips });
+        return { success: true, data:res };
       } catch (err) {
-        return { success: false, error: err.response?.data?.message || "Failed to add trip" };
+        return { success: false, data: err.response };
       }
     },
     removeTrip: async (reservationId) => {
       try {
-        const { data } = await axios.delete(
+        const res = await axios.delete(
           `${ServerUrl}/reserv/${reservationId}`,
           { withCredentials: true }
         );
-
-        setTrips(data.trips);
-        setUser(prev => ({ ...prev, reservations: data.trips }));
-        socket.emit("tripUpdated", { userId: user._id, reservations: data.trips });
-        return { success: true, data };
+        setTrips(res.data.trips);
+        setUser(prev => ({ ...prev, reservations: res.data.trips }));
+        socket.emit("tripUpdated", { userId: user._id, reservations: res.data.trips });
+        return { success: true, data:res };
       } catch (err) {
-        return { success: false, error: err.response?.data?.message || "Failed to remove trip" };
+        return { success: false, edata: err.response };
       }
     },
     // Hometels
     addHometel: async (hometelData) => {
       try {
-        const { data } = await axios.post(
+        const res = await axios.post(
           `${ServerUrl}/listing/new`,
           hometelData,
           {
@@ -308,17 +302,17 @@ const checkAuth = useCallback(async () => {
           }
         );
 
-        setHometels(data.hometels);
-        setUser(prev => ({ ...prev, hometels: data.hometels }));
-        socket.emit("hometelUpdated", { userId: user._id, hometels: data.hometels });
-        return { success: true, data };
+        setHometels(res.data.hometels);
+        setUser(prev => ({ ...prev, hometels: res.data.hometels }));
+        socket.emit("hometelUpdated", { userId: user._id, hometels: res.data.hometels });
+        return { success: true, data:res };
       } catch (err) {
-        return { success: false, error: err.response?.data?.message || "Failed to add hometel" };
+        return { success: false, data: err.response };
       }
     },
     updateHometel: async (hometelData, hometelId) => {
       try {
-        const { data } = await axios.put(
+        const res = await axios.put(
           `${ServerUrl}/listing/update/${hometelId}`,
           hometelData,
           {
@@ -327,12 +321,12 @@ const checkAuth = useCallback(async () => {
           }
         );
 
-        setHometels(data.hometels);
-        setUser(prev => ({ ...prev, hometels: data.hometels }));
-        socket.emit("hometelUpdated", { userId: user._id, hometels: data.hometels });
-        return { success: true, data };
+        setHometels(res.data.hometels);
+        setUser(prev => ({ ...prev, hometels: res.data.hometels }));
+        socket.emit("hometelUpdated", { userId: user._id, hometels: res.data.hometels });
+        return { success: true, data:res };
       } catch (err) {
-        return { success: false, error: err.response?.data?.message || "Failed to update hometel" };
+        return { success: false, data: err.response };
       }
     },
     removeHometel: async (hometelId) => {
@@ -347,32 +341,32 @@ const checkAuth = useCallback(async () => {
         socket.emit("hometelUpdated", { userId: user._id, hometels: data.hometels });
         return { success: true, data };
       } catch (err) {
-        return { success: false, error: err.response?.data?.message || "Failed to remove hometel" };
+        return { success: false, data: err.response };
       }
     },
     // Password reset
     resetPassword: async (credentials) => {
       try {
-        const { data } = await axios.patch(
+        const res = await axios.patch(
           `${ServerUrl}/user/reset-password`,
           credentials,
           { withCredentials: true }
         );
-        return { success: true, data };
+        return { success: true, data:res };
       } catch (err) {
-        return { success: false, error: err.response?.data?.message || "Password reset failed" };
+        return { success: false, data: err.response };
       }
     },
     verifyResetPasswordOtp: async (credentials) => {
       try {
-        const { data } = await axios.put(
+        const res = await axios.put(
           `${ServerUrl}/user/reset-password`,
           credentials,
           { withCredentials: true }
         );
-        return { success: true, data };
+        return { success: true, data:res };
       } catch (err) {
-        return { success: false, error: err.response?.data?.message || "OTP verification failed" };
+        return { success: false, data: err.response };
       }
     },
   };

@@ -16,13 +16,13 @@ const Review = ({
   createdFor,
 }) => {
   const svg = avatar(name || "", { size: 55, blackout: false });
-  const { loading, user, removereview } = useAuth();
+  const { loading, user, removeReview} = useAuth();
   const [Loading, SetLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleDelete = async () => {
     SetLoading(true);
-    const data = await removereview(reviewId);
+    const data = await removeReview(reviewId);
     if (!data.success) { 
       SetLoading(false)
       toast.error(data.data.data.message);
