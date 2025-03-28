@@ -273,8 +273,7 @@ export default function FormComponent() {
 
     const formData = new FormData();
     formData.append("userDetails", JSON.stringify(newData));
-      let data = await updateUser({
-        id: user._id,
+      let data = await updateUser({userDetails:{    id: user._id,
         fullname: userDetails.fullname,
         email: userDetails.email,
         phoneNumber: userDetails.phoneNumber,
@@ -283,13 +282,14 @@ export default function FormComponent() {
         state: userDetails.state,
         city: userDetails.city,
         streetAddress: userDetails.streetAddress,
-        password: userDetails.password,
+        password: userDetails.password,}
+    
       });
     if (!data.success) { 
       setLoaDing(false);
               toast.error("Failed to update profile. Please try again.");
-      } else {
-      navigate(data.data.redirectUrl)
+    } else {
+      navigate(data.data.data.redirectUrl)
       setLoaDing(false);
         toast.success("Details updated successfully! 🎉");
       }

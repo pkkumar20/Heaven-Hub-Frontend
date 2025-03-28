@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 
-const GuestSelector = ({ onClose, onSave }) => {
+const GuestSelector = ({ onClose, onSave,defaultGuests }) => {
   const [guests, setGuests] = useState({
     adults: 1,
     children: 0,
     infants: 0,
     pets: 0,
   });
-
   const maxGuests = 3; // Max guests excluding infants
-
+  useEffect(() => {
+    setGuests(defaultGuests);
+},[defaultGuests])
   const handleChange = (type, delta) => {
     setGuests((prev) => {
       const newCount = prev[type] + delta;
@@ -71,7 +72,10 @@ const GuestSelector = ({ onClose, onSave }) => {
             Cancel
           </button>
           <button
-            onClick={() => onSave(guests)}
+            onClick={() => {
+              onSave(guests)
+              onClose()
+            }}
             className="bg-black text-white px-4 py-2 rounded-lg"
           >
             Save

@@ -53,7 +53,12 @@ const BookingSummary = () => {
     setShowCalender(value);
   };
   const [isOpen, setIsOpen] = useState(false);
-  const [guestInfo, setGuestInfo] = useState({ adults: 1 });
+  const [guestInfo, setGuestInfo] = useState({
+    adults: 1,
+    children: 0,
+    infants: 0,
+    pets: 0,
+  });
 
   // Get selected dates
   const selectedDates = [];
@@ -261,7 +266,7 @@ const isReserved = reservationDates.some((reservation) => {
       </div>
 
       {showCalender && <DatePicker showValue={handleShowDatePicker} hometelId={id} reservDates={reservationDates} />}
-      {isOpen && <GuestSelector onClose={() => setIsOpen(false)} onSave={(data) => setGuestInfo(data)} />}
+      {isOpen && <GuestSelector  onClose={() => setIsOpen(false)} onSave={(data) => setGuestInfo(data)} defaultGuests={guestInfo} />}
     </div>
   );
 };

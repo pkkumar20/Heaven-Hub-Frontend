@@ -187,7 +187,6 @@ const checkAuth = useCallback(async () => {
           withCredentials: true,
           headers: { "Content-Type": "multipart/form-data" },
         });
-
         setUser(res.data.user);
         sessionStorage.setItem("user", JSON.stringify(res.data.user));
         socket.emit("authUpdate");
